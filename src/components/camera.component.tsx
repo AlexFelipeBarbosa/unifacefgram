@@ -7,13 +7,33 @@ interface Props {
   status: boolean;
 }
 
-export class Camera extends Component<Props> {
+interface State {
+  typeCamera: any;
+}
+
+export class Camera extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      typeCamera: RNCamera.Constants.Type.back,
+    };
+  }
+
   render() {
     const PendingView = () => (
       <View style={styles.pendingView}>
         <Text>Carregando..</Text>
       </View>
     );
+
+    const cameraMode = () => {
+      if (this.state.typeCamera === RNCamera.Constants.Type.front) {
+        this.setState({typeCamera: RNCamera.Constants.Type.back});
+      } else {
+        this.setState({typeCamera: RNCamera.Constants.Type.front});
+      }
+    };
 
     const {status} = this.props;
 
@@ -24,7 +44,7 @@ export class Camera extends Component<Props> {
             <RNCamera
               captureAudio={false}
               style={styles.preview}
-              type={RNCamera.Constants.Type.back}
+              type={this.state.typeCamera}
               androidCameraPermissionOptions={{
                 title: 'Permissão para usar camera',
                 message: 'Precisamos da sua persmissão para fotografar',
@@ -35,6 +55,11 @@ export class Camera extends Component<Props> {
                 if (status !== 'READY') return <PendingView />;
                 return (
                   <View>
+                    <TouchableOpacity
+                      onPress={() => cameraMode()}
+                      style={styles.capture}>
+                      <Text style={styles.titlePhoto}>Camera</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() => this.cancel()}
                       style={styles.capture}>
