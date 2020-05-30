@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 interface Props {
-  onTakeCamera: (uri: string) => void;
+  onTakeCamera: (uri?: string) => void;
   status: boolean;
 }
 
@@ -36,6 +36,11 @@ export class Camera extends Component<Props> {
                 return (
                   <View>
                     <TouchableOpacity
+                      onPress={() => this.cancel()}
+                      style={styles.capture}>
+                      <Text style={styles.titlePhoto}>Cancelar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                       onPress={() => this.takePicture(camera)}
                       style={styles.capture}>
                       <Text style={styles.titlePhoto}>Fotografar</Text>
@@ -49,6 +54,11 @@ export class Camera extends Component<Props> {
       </View>
     );
   }
+
+  cancel = () => {
+    const {onTakeCamera} = this.props;
+    onTakeCamera();
+  };
 
   takePicture = async (camera: RNCamera) => {
     const {onTakeCamera} = this.props;
